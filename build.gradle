@@ -27,7 +27,7 @@ allprojects {
 
 ext{
     //SDK & Tools
-    minSdkVersion = 21
+    minSdkVersion = 26
     targetSdkVersion = 29
     compileSdkVersion = 29
     versionCode = 1
@@ -51,7 +51,7 @@ ext{
     reactiveStreamsVersion = '2.2.0'
     recyclerViewVersion = '1.1.0'
     retrofitVersion = '2.9.0'
-    roomVersion = '2.2.5'
+    roomVersion = '2.4.2'
     rxAndroidVersion = '2.1.1'
     rxJavaVersion = '2.2.19'
     swipeRefreshLayoutVersion = '1.1.0'
