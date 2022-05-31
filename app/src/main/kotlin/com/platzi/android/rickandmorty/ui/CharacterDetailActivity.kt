@@ -17,6 +17,8 @@ import com.platzi.android.rickandmorty.data.*
 import com.platzi.android.rickandmorty.framework.databasemanager.CharacterDatabase
 import com.platzi.android.rickandmorty.framework.databasemanager.CharacterRoomDataSource
 import com.platzi.android.rickandmorty.databinding.ActivityCharacterDetailBinding
+import com.platzi.android.rickandmorty.dependencyinyect.CharacterDetailComponent
+import com.platzi.android.rickandmorty.dependencyinyect.CharacterDetailModule
 import com.platzi.android.rickandmorty.domain.Character
 import com.platzi.android.rickandmorty.framework.bindCircularImageUrl
 import com.platzi.android.rickandmorty.parcelables.CharacterParcelable
@@ -27,6 +29,7 @@ import com.platzi.android.rickandmorty.usescases.GetEpisodeFromCharacterUseCase
 import com.platzi.android.rickandmorty.usescases.GetFavoriteCharacterStatusCase
 import com.platzi.android.rickandmorty.usescases.UpdateFavoriteCharacterStatusUseCase
 import com.platzi.android.rickandmorty.utils.Constants
+import com.platzi.android.rickandmorty.utils.app
 import com.platzi.android.rickandmorty.utils.getViewModel
 import com.platzi.android.rickandmorty.utils.showLongToast
 import kotlinx.android.synthetic.main.activity_character_detail.*
@@ -38,54 +41,11 @@ class CharacterDetailActivity: AppCompatActivity() {
     private lateinit var episodeListAdapter: EpisodeListAdapter
     private lateinit var binding: ActivityCharacterDetailBinding
 
-    private val episodeRequest: EpisodeRequest by lazy {
-        EpisodeRequest(BASE_API_URL)
-    }
-
-    private val characterRequest : CharacterRequest by lazy {
-        CharacterRequest(BASE_API_URL)
-    }
-
-    private val remoteCharacterDataSource: RemoteCharacterDataSource by lazy {
-        CharacterRetrofitDataSource(characterRequest)
-    }
-
-    private val remoteEpisodeDataSource: RemoteEpisodeDataSource by lazy {
-        EpisodeRetrofitDataSource(episodeRequest)
-    }
-
-    private val episodeRepository: EpisodeRepository by lazy {
-        EpisodeRepository(remoteEpisodeDataSource)
-    }
-
-    private val localCharacterDataSource: LocalCharacterDataSource by lazy {
-        CharacterRoomDataSource(CharacterDatabase.getDatabase(applicationContext))
-    }
-
-    private val characterRepository : CharacterRepository by lazy {
-        CharacterRepository(remoteCharacterDataSource, localCharacterDataSource)
-    }
-
-    private val getEpisodeFromCharacterUseCase: GetEpisodeFromCharacterUseCase by lazy {
-        GetEpisodeFromCharacterUseCase(episodeRepository)
-    }
-
-    private val getFavoriteCharacterStatusUseCase: GetFavoriteCharacterStatusCase by lazy {
-        GetFavoriteCharacterStatusCase(characterRepository)
-    }
-
-    private val updateFavoriteCharacterStatusUseCase: UpdateFavoriteCharacterStatusUseCase by lazy {
-        UpdateFavoriteCharacterStatusUseCase(characterRepository)
-    }
+    private lateinit var characterDetailComponent: CharacterDetailComponent
 
     private val characterDetailViewModel: CharacterDetailViewModel by lazy {
         getViewModel {
-            CharacterDetailViewModel(
-                intent.getParcelableExtra<CharacterParcelable>(Constants.EXTRA_CHARACTER)?.toCharacterDomain(),
-                getEpisodeFromCharacterUseCase,
-                getFavoriteCharacterStatusUseCase,
-                updateFavoriteCharacterStatusUseCase
-            )
+            characterDetailComponent.characterDetailViewModel
         }
     }
 
@@ -95,6 +55,12 @@ class CharacterDetailActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        characterDetailComponent = app.component.inject(
+            CharacterDetailModule(
+                intent.getParcelableExtra<CharacterParcelable>(Constants.EXTRA_CHARACTER)?.toCharacterDomain()
+            )
+        )
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_character_detail)
         binding.lifecycleOwner = this@CharacterDetailActivity

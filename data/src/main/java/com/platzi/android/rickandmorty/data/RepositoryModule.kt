@@ -15,4 +15,11 @@ class RepositoryModule {
         localCharacterDataSource
     )
 
+    @Provides
+    fun episodeRepository(
+        remoteEpisodeDataSource: RemoteEpisodeDataSource
+    ) = EpisodeRepository(
+        remoteEpisodeDataSource,
+    )
+
 }

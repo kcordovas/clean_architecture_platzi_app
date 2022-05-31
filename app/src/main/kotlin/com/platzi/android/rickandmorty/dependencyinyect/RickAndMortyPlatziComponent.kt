@@ -14,6 +14,7 @@ import javax.inject.Singleton
 interface RickAndMortyPlatziComponent {
     fun inject(module: CharacterListModule) : CharacterListComponent
     fun inject(module: FavoriteListModule) : FavoriteListComponent
+    fun inject(module: CharacterDetailModule) : CharacterDetailComponent
 
     @Component.Factory
     interface Factory {
