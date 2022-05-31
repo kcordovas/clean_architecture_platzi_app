@@ -16,6 +16,8 @@ import com.platzi.android.rickandmorty.database.CharacterDatabase
 import com.platzi.android.rickandmorty.databinding.ActivityCharacterDetailBinding
 import com.platzi.android.rickandmorty.presentation.CharacterDetailViewModel
 import com.platzi.android.rickandmorty.usescases.GetEpisodeFromCharacterUseCase
+import com.platzi.android.rickandmorty.usescases.GetFavoriteCharacterStatusCase
+import com.platzi.android.rickandmorty.usescases.UpdateFavoriteCharacterStatusUseCase
 import com.platzi.android.rickandmorty.utils.Constants
 import com.platzi.android.rickandmorty.utils.bindCircularImageUrl
 import com.platzi.android.rickandmorty.utils.getViewModel
@@ -38,12 +40,21 @@ class CharacterDetailActivity : AppCompatActivity() {
         GetEpisodeFromCharacterUseCase(episodeRequest)
     }
 
+    private val getFavoriteCharacterStatusCase : GetFavoriteCharacterStatusCase by lazy {
+        GetFavoriteCharacterStatusCase(characterDao)
+    }
+
+    private val updateFavoriteCharacterStatusUseCase : UpdateFavoriteCharacterStatusUseCase by lazy {
+        UpdateFavoriteCharacterStatusUseCase(characterDao)
+    }
+
     private val viewModel: CharacterDetailViewModel by lazy {
         getViewModel {
             CharacterDetailViewModel(
-                characterDao,
                 getEpisodeFromCharacterUseCase,
-                intent.getParcelableExtra(Constants.EXTRA_CHARACTER)
+                intent.getParcelableExtra(Constants.EXTRA_CHARACTER),
+                getFavoriteCharacterStatusCase,
+                updateFavoriteCharacterStatusUseCase
             )
         }
     }

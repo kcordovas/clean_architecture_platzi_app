@@ -7,6 +7,8 @@ import com.platzi.android.rickandmorty.api.*
 import com.platzi.android.rickandmorty.database.CharacterDao
 import com.platzi.android.rickandmorty.database.CharacterEntity
 import com.platzi.android.rickandmorty.usescases.GetEpisodeFromCharacterUseCase
+import com.platzi.android.rickandmorty.usescases.GetFavoriteCharacterStatusCase
+import com.platzi.android.rickandmorty.usescases.UpdateFavoriteCharacterStatusUseCase
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -14,9 +16,10 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 class CharacterDetailViewModel(
-    private val characterDao: CharacterDao,
     private val getEpisodeFromCharacterUseCase: GetEpisodeFromCharacterUseCase,
-    private val character: CharacterServer? = null
+    private val character: CharacterServer? = null,
+    private val getFavoriteCharacterStatusCase: GetFavoriteCharacterStatusCase,
+    private val updateFavoriteCharacterStatusUseCase: UpdateFavoriteCharacterStatusUseCase
 ) : ViewModel() {
     private val disposable = CompositeDisposable()
 
@@ -54,13 +57,8 @@ class CharacterDetailViewModel(
 
     private fun onValidateFavoriteCharacterStatus() {
         disposable.add(
-            characterDao.getCharacterById(character!!.id)
-                .isEmpty
-                .flatMapMaybe { isEmpty ->
-                    Maybe.just(!isEmpty)
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
+            getFavoriteCharacterStatusCase
+                .invoke(character!!.id)
                 .subscribe { isFavorite ->
                     _isFavoriteCharacter.value = isFavorite
                 }
@@ -90,18 +88,8 @@ class CharacterDetailViewModel(
     fun onUpdateFavoriteCharacterStatus() {
         val characterEntity: CharacterEntity = character!!.toCharacterEntity()
         disposable.add(
-            characterDao.getCharacterById(characterEntity.id)
-                .isEmpty
-                .flatMapMaybe { isEmpty ->
-                    if (isEmpty) {
-                        characterDao.insertCharacter(characterEntity)
-                    } else {
-                        characterDao.deleteCharacter(characterEntity)
-                    }
-                    Maybe.just(isEmpty)
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
+            updateFavoriteCharacterStatusUseCase
+                .invoke(characterEntity)
                 .subscribe { isFavorite ->
                     _isFavoriteCharacter.value = isFavorite
                 }
