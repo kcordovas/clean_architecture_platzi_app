@@ -1,4 +1,4 @@
-package com.platzi.android.rickandmorty.database
+package com.platzi.android.rickandmorty.framework.databasemanager
 
 import com.platzi.android.rickandmorty.domain.Character
 import com.platzi.android.rickandmorty.domain.Location
