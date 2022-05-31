@@ -62,6 +62,10 @@ dependencies {
     //KTX
     implementation ktxLib
 
+    // Dagger
+    implementation daggerLib
+    kapt daggerCompiler
+
     //Material
     implementation materialLib
 
