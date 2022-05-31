@@ -64,6 +64,7 @@ dependencies {
 
     // Dagger
     implementation daggerLib
+
     kapt daggerCompiler
 
     //Material
@@ -82,4 +83,11 @@ dependencies {
     implementation recyclerViewLib
     implementation swipeRefreshLayoutLib
     implementation viewPagerLib
+
+    // Testing
+    testImplementation project(path: ':app')
+    testImplementation coreTestingLib
+    testImplementation jUnitLib
+    testImplementation mockitoLib
+    testImplementation mockitoInlineLib
 }

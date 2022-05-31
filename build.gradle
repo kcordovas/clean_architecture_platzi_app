@@ -44,7 +44,7 @@ ext{
     gsonVersion = '2.8.6'
     jUnitVersion = '4.13'
     materialVersion = '1.1.0'
-    mockitoKotlinInlineVersion = '3.3.3'
+    mockitoKotlinInlineVersion = '4.4.0'
     mockitoKotlinVersion = '2.2.0'
     okHttpLoggingInterceptorVersion = '4.7.2'
     pagingVersion = '2.1.2'
