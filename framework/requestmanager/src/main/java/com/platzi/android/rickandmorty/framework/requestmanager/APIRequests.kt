@@ -1,4 +1,4 @@
-package com.platzi.android.rickandmorty.api
+package com.platzi.android.rickandmorty.framework.requestmanager
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

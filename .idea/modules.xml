@@ -23,6 +23,10 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/framework/imagemanager/RickAndMortyPlatzi.framework.imagemanager.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/framework/imagemanager/RickAndMortyPlatzi.framework.imagemanager.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/framework/imagemanager/RickAndMortyPlatzi.framework.imagemanager.main.iml" filepath="$PROJECT_DIR$/.idea/modules/framework/imagemanager/RickAndMortyPlatzi.framework.imagemanager.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/framework/imagemanager/RickAndMortyPlatzi.framework.imagemanager.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/framework/imagemanager/RickAndMortyPlatzi.framework.imagemanager.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/framework/requestmanager/RickAndMortyPlatzi.framework.requestmanager.iml" filepath="$PROJECT_DIR$/.idea/modules/framework/requestmanager/RickAndMortyPlatzi.framework.requestmanager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/framework/requestmanager/RickAndMortyPlatzi.framework.requestmanager.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/framework/requestmanager/RickAndMortyPlatzi.framework.requestmanager.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/framework/requestmanager/RickAndMortyPlatzi.framework.requestmanager.main.iml" filepath="$PROJECT_DIR$/.idea/modules/framework/requestmanager/RickAndMortyPlatzi.framework.requestmanager.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/framework/requestmanager/RickAndMortyPlatzi.framework.requestmanager.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/framework/requestmanager/RickAndMortyPlatzi.framework.requestmanager.unitTest.iml" />
     </modules>
   </component>
 </project>
