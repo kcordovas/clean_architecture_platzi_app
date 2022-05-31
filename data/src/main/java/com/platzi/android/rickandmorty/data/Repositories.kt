@@ -11,3 +11,9 @@ class CharacterRepository(
     fun getFavoriteCharacterStatus(id : Int) = localCharacterDataSource.getFavoriteCharacterStatus(id)
     fun updateFavoriteCharacterStatus(character: Character) = localCharacterDataSource.updateFavoriteCharacterStatus(character)
 }
+
+class EpisodeRepository(
+    private val remoteEpisodeDataSource: RemoteEpisodeDataSource
+) {
+    fun getEpisodeCharacter(episodeUrlList: List<String>) = remoteEpisodeDataSource.getEpisodeCharacter(episodeUrlList)
+}

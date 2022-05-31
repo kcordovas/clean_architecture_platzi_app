@@ -1,6 +1,7 @@
 package com.platzi.android.rickandmorty.data
 
 import com.platzi.android.rickandmorty.domain.Character
+import com.platzi.android.rickandmorty.domain.Episode
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -15,4 +16,8 @@ interface LocalCharacterDataSource {
     fun getFavoriteCharacterStatus(id: Int) : Maybe<Boolean>
 
     fun updateFavoriteCharacterStatus(character: Character) : Maybe<Boolean>
+}
+
+interface RemoteEpisodeDataSource {
+    fun getEpisodeCharacter(episodeUrlList: List<String>) : Single<List<Episode>>
 }

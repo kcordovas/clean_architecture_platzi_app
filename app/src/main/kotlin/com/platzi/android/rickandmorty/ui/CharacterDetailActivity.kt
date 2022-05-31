@@ -8,14 +8,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.platzi.android.rickandmorty.R
 import com.platzi.android.rickandmorty.adapters.EpisodeListAdapter
+import com.platzi.android.rickandmorty.api.*
 import com.platzi.android.rickandmorty.api.APIConstants.BASE_API_URL
-import com.platzi.android.rickandmorty.api.CharacterRequest
-import com.platzi.android.rickandmorty.api.CharacterRetrofitDataSource
-import com.platzi.android.rickandmorty.api.CharacterServer
-import com.platzi.android.rickandmorty.api.EpisodeRequest
-import com.platzi.android.rickandmorty.data.CharacterRepository
-import com.platzi.android.rickandmorty.data.LocalCharacterDataSource
-import com.platzi.android.rickandmorty.data.RemoteCharacterDataSource
+import com.platzi.android.rickandmorty.data.*
 import com.platzi.android.rickandmorty.database.CharacterDao
 import com.platzi.android.rickandmorty.database.CharacterDatabase
 import com.platzi.android.rickandmorty.database.CharacterRoomDataSource
@@ -53,6 +48,14 @@ class CharacterDetailActivity: AppCompatActivity() {
         CharacterRetrofitDataSource(characterRequest)
     }
 
+    private val remoteEpisodeDataSource: RemoteEpisodeDataSource by lazy {
+        EpisodeRetrofitDataSource(episodeRequest)
+    }
+
+    private val episodeRepository: EpisodeRepository by lazy {
+        EpisodeRepository(remoteEpisodeDataSource)
+    }
+
     private val localCharacterDataSource: LocalCharacterDataSource by lazy {
         CharacterRoomDataSource(CharacterDatabase.getDatabase(applicationContext))
     }
@@ -62,7 +65,7 @@ class CharacterDetailActivity: AppCompatActivity() {
     }
 
     private val getEpisodeFromCharacterUseCase: GetEpisodeFromCharacterUseCase by lazy {
-        GetEpisodeFromCharacterUseCase(episodeRequest)
+        GetEpisodeFromCharacterUseCase(episodeRepository)
     }
 
     private val getFavoriteCharacterStatusUseCase: GetFavoriteCharacterStatusCase by lazy {
