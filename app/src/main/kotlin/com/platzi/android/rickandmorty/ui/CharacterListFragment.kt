@@ -21,12 +21,15 @@ import com.platzi.android.rickandmorty.data.RemoteCharacterDataSource
 import com.platzi.android.rickandmorty.framework.databasemanager.CharacterDatabase
 import com.platzi.android.rickandmorty.framework.databasemanager.CharacterRoomDataSource
 import com.platzi.android.rickandmorty.databinding.FragmentCharacterListBinding
+import com.platzi.android.rickandmorty.dependencyinyect.CharacterListComponent
+import com.platzi.android.rickandmorty.dependencyinyect.CharacterListModule
 import com.platzi.android.rickandmorty.domain.Character
 import com.platzi.android.rickandmorty.presentation.CharacterListViewModel
 import com.platzi.android.rickandmorty.presentation.CharacterListViewModel.CharacterListNavigation
 import com.platzi.android.rickandmorty.presentation.CharacterListViewModel.CharacterListNavigation.*
 import com.platzi.android.rickandmorty.presentation.Event
 import com.platzi.android.rickandmorty.usescases.GetAllCharactersUseCase
+import com.platzi.android.rickandmorty.utils.app
 import com.platzi.android.rickandmorty.utils.getViewModel
 import com.platzi.android.rickandmorty.utils.setItemDecorationSpacing
 import com.platzi.android.rickandmorty.utils.showLongToast
@@ -40,28 +43,10 @@ class CharacterListFragment : Fragment() {
     private lateinit var characterGridAdapter: CharacterGridAdapter
     private lateinit var listener: OnCharacterListFragmentListener
 
-    private val characterRequest: CharacterRequest by lazy {
-        CharacterRequest(BASE_API_URL)
-    }
-
-    private val remoteCharacterDataSource : RemoteCharacterDataSource by lazy {
-        CharacterRetrofitDataSource(characterRequest)
-    }
-
-    private val localCharacterDataSource: LocalCharacterDataSource by lazy {
-        CharacterRoomDataSource(CharacterDatabase.getDatabase(activity!!.applicationContext))
-    }
-
-    private val characterRepository : CharacterRepository by lazy {
-        CharacterRepository(remoteCharacterDataSource, localCharacterDataSource)
-    }
-
-    private val getAllCharactersUseCase: GetAllCharactersUseCase by lazy {
-        GetAllCharactersUseCase(characterRepository)
-    }
+    private lateinit var characterListComponent: CharacterListComponent
 
     private val characterListViewModel: CharacterListViewModel by lazy {
-        getViewModel { CharacterListViewModel(getAllCharactersUseCase) }
+        getViewModel { characterListComponent.characterListViewModel }
     }
 
     private val onScrollListener: RecyclerView.OnScrollListener by lazy {
@@ -82,6 +67,12 @@ class CharacterListFragment : Fragment() {
     //endregion
 
     //region Override Methods & Callbacks
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        characterListComponent = context!!.app.component.inject(CharacterListModule())
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
