@@ -3,10 +3,9 @@ package com.platzi.android.rickandmorty.adapters
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.platzi.android.rickandmorty.R
-import com.platzi.android.rickandmorty.api.CharacterServer
 import com.platzi.android.rickandmorty.databinding.ItemGridCharacterBinding
 import com.platzi.android.rickandmorty.domain.Character
-import com.platzi.android.rickandmorty.utils.bindImageUrl
+import com.platzi.android.rickandmorty.framework.bindImageUrl
 import com.platzi.android.rickandmorty.utils.bindingInflate
 import kotlinx.android.synthetic.main.item_grid_character.view.*
 

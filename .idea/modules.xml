@@ -7,6 +7,18 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/RickAndMortyPlatzi.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/RickAndMortyPlatzi.app.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/RickAndMortyPlatzi.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/RickAndMortyPlatzi.app.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/RickAndMortyPlatzi.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/RickAndMortyPlatzi.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/data/RickAndMortyPlatzi.data.iml" filepath="$PROJECT_DIR$/.idea/modules/data/RickAndMortyPlatzi.data.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/data/RickAndMortyPlatzi.data.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/data/RickAndMortyPlatzi.data.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/data/RickAndMortyPlatzi.data.main.iml" filepath="$PROJECT_DIR$/.idea/modules/data/RickAndMortyPlatzi.data.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/data/RickAndMortyPlatzi.data.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/data/RickAndMortyPlatzi.data.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/domain/RickAndMortyPlatzi.domain.iml" filepath="$PROJECT_DIR$/.idea/modules/domain/RickAndMortyPlatzi.domain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/domain/RickAndMortyPlatzi.domain.main.iml" filepath="$PROJECT_DIR$/.idea/modules/domain/RickAndMortyPlatzi.domain.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/domain/RickAndMortyPlatzi.domain.test.iml" filepath="$PROJECT_DIR$/.idea/modules/domain/RickAndMortyPlatzi.domain.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/framework/RickAndMortyPlatzi.framework.iml" filepath="$PROJECT_DIR$/.idea/modules/framework/RickAndMortyPlatzi.framework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/framework/imagemanager/RickAndMortyPlatzi.framework.imagemanager.iml" filepath="$PROJECT_DIR$/.idea/modules/framework/imagemanager/RickAndMortyPlatzi.framework.imagemanager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/framework/imagemanager/RickAndMortyPlatzi.framework.imagemanager.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/framework/imagemanager/RickAndMortyPlatzi.framework.imagemanager.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/framework/imagemanager/RickAndMortyPlatzi.framework.imagemanager.main.iml" filepath="$PROJECT_DIR$/.idea/modules/framework/imagemanager/RickAndMortyPlatzi.framework.imagemanager.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/framework/imagemanager/RickAndMortyPlatzi.framework.imagemanager.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/framework/imagemanager/RickAndMortyPlatzi.framework.imagemanager.unitTest.iml" />
     </modules>
   </component>
 </project>

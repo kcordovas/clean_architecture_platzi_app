@@ -8,14 +8,17 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.platzi.android.rickandmorty.R
 import com.platzi.android.rickandmorty.adapters.EpisodeListAdapter
-import com.platzi.android.rickandmorty.api.*
 import com.platzi.android.rickandmorty.api.APIConstants.BASE_API_URL
+import com.platzi.android.rickandmorty.api.CharacterRequest
+import com.platzi.android.rickandmorty.api.CharacterRetrofitDataSource
+import com.platzi.android.rickandmorty.api.EpisodeRequest
+import com.platzi.android.rickandmorty.api.EpisodeRetrofitDataSource
 import com.platzi.android.rickandmorty.data.*
-import com.platzi.android.rickandmorty.database.CharacterDao
 import com.platzi.android.rickandmorty.database.CharacterDatabase
 import com.platzi.android.rickandmorty.database.CharacterRoomDataSource
 import com.platzi.android.rickandmorty.databinding.ActivityCharacterDetailBinding
 import com.platzi.android.rickandmorty.domain.Character
+import com.platzi.android.rickandmorty.framework.bindCircularImageUrl
 import com.platzi.android.rickandmorty.parcelables.CharacterParcelable
 import com.platzi.android.rickandmorty.parcelables.toCharacterDomain
 import com.platzi.android.rickandmorty.presentation.CharacterDetailViewModel
@@ -24,7 +27,6 @@ import com.platzi.android.rickandmorty.usescases.GetEpisodeFromCharacterUseCase
 import com.platzi.android.rickandmorty.usescases.GetFavoriteCharacterStatusCase
 import com.platzi.android.rickandmorty.usescases.UpdateFavoriteCharacterStatusUseCase
 import com.platzi.android.rickandmorty.utils.Constants
-import com.platzi.android.rickandmorty.utils.bindCircularImageUrl
 import com.platzi.android.rickandmorty.utils.getViewModel
 import com.platzi.android.rickandmorty.utils.showLongToast
 import kotlinx.android.synthetic.main.activity_character_detail.*
