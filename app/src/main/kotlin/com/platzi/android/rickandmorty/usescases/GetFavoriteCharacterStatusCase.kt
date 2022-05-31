@@ -1,20 +1,13 @@
 package com.platzi.android.rickandmorty.usescases
 
+import com.platzi.android.rickandmorty.data.CharacterRepository
 import com.platzi.android.rickandmorty.database.CharacterDao
 import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 class GetFavoriteCharacterStatusCase(
-    private val characterDao: CharacterDao
+    private val characterRepository: CharacterRepository
 ) {
-
-    fun invoke(characterId: Int) : Maybe<Boolean> =
-        characterDao.getCharacterById(characterId)
-            .isEmpty
-            .flatMapMaybe { isEmpty ->
-                Maybe.just(!isEmpty)
-            }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.io())
+    fun invoke(characterId: Int) : Maybe<Boolean> = characterRepository.getFavoriteCharacterStatus(characterId)
 }
