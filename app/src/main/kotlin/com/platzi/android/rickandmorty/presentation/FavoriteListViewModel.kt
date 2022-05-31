@@ -4,65 +4,58 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.platzi.android.rickandmorty.database.CharacterDao
-import com.platzi.android.rickandmorty.database.CharacterEntity
+import com.platzi.android.rickandmorty.domain.Character
+import com.platzi.android.rickandmorty.presentation.FavoriteListViewModel.FavoriteListNavigation.ShowCharacterList
+import com.platzi.android.rickandmorty.presentation.FavoriteListViewModel.FavoriteListNavigation.ShowEmptyListMessage
 import com.platzi.android.rickandmorty.usescases.GetAllFavoriteCharacterUseCase
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 
-class FavoriteListViewModel(
-    private val getAllFavoriteCharacterUseCase: GetAllFavoriteCharacterUseCase
-) : ViewModel() {
+class FavoriteListViewModel (
+    private val getAllFavoriteCharactersUseCase: GetAllFavoriteCharacterUseCase
+) : ViewModel(){
+
+    //region Fields
 
     private val disposable = CompositeDisposable()
 
     private val _events = MutableLiveData<Event<FavoriteListNavigation>>()
     val events: LiveData<Event<FavoriteListNavigation>> get() = _events
 
-    private val _favoriteCharacterList: LiveData<List<CharacterEntity>>
-        get() = LiveDataReactiveStreams.fromPublisher(
-            getAllFavoriteCharacterUseCase.invoke()
-        )
+    val favoriteCharacterList: LiveData<List<Character>>
+        get() = LiveDataReactiveStreams.fromPublisher(getAllFavoriteCharactersUseCase.invoke())
 
-    val favoriteCharacterList: LiveData<List<CharacterEntity>>
-        get() = _favoriteCharacterList
+    //endregion
 
-    /*
-    disposable.add(
-            characterDao.getAllFavoriteCharacters()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ characterList ->
-                    if(characterList.isEmpty()) {
-                        tvEmptyListMessage.isVisible = true
-                        favoriteListAdapter.updateData(emptyList())
-                    } else {
-                        tvEmptyListMessage.isVisible = false
-                        favoriteListAdapter.updateData(characterList)
-                    }
-                },{
-                    tvEmptyListMessage.isVisible = true
-                    favoriteListAdapter.updateData(emptyList())
-                })
-        )
-     */
-
-    sealed class FavoriteListNavigation {
-        data class ShowCharacterList(val characterList: List<CharacterEntity>) : FavoriteListNavigation()
-        object ShowEmptyListMessage : FavoriteListNavigation()
-    }
-
-    fun onFavoriteCharacterList(list: List<CharacterEntity>) {
-        if (list.isEmpty()) {
-            _events.value = Event(FavoriteListNavigation.ShowCharacterList(emptyList()))
-            return
-        }
-
-        _events.value = Event(FavoriteListNavigation.ShowCharacterList(list))
-    }
+    //region Override Methods & Callbacks
 
     override fun onCleared() {
         super.onCleared()
         disposable.clear()
     }
+
+    //endregion
+
+    //region Public Methods
+
+    fun onFavoriteCharacterList(favoriteCharacterList: List<Character>) {
+        if (favoriteCharacterList.isEmpty()) {
+            _events.value = Event(ShowCharacterList(emptyList()))
+            _events.value = Event(ShowEmptyListMessage)
+            return
+        }
+
+        _events.value = Event(ShowCharacterList(favoriteCharacterList))
+    }
+
+    //endregion
+
+    //region Inner Classes & Interfaces
+
+    sealed class FavoriteListNavigation {
+        data class ShowCharacterList(val characterList: List<Character>) : FavoriteListNavigation()
+        object ShowEmptyListMessage : FavoriteListNavigation()
+    }
+
+    //endregion
+
 }

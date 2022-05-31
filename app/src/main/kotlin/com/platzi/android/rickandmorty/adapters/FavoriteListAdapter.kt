@@ -3,7 +3,6 @@ package com.platzi.android.rickandmorty.adapters
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.platzi.android.rickandmorty.R
-import com.platzi.android.rickandmorty.database.CharacterEntity
 import com.platzi.android.rickandmorty.databinding.ItemGridFavoriteCharacterBinding
 import com.platzi.android.rickandmorty.domain.Character
 import com.platzi.android.rickandmorty.utils.bindImageUrl

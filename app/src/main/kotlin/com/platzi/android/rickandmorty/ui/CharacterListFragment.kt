@@ -12,12 +12,16 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.platzi.android.rickandmorty.R
 import com.platzi.android.rickandmorty.adapters.CharacterGridAdapter
-import com.platzi.android.rickandmorty.api.*
 import com.platzi.android.rickandmorty.api.APIConstants.BASE_API_URL
+import com.platzi.android.rickandmorty.api.CharacterRequest
 import com.platzi.android.rickandmorty.databinding.FragmentCharacterListBinding
+import com.platzi.android.rickandmorty.domain.Character
 import com.platzi.android.rickandmorty.presentation.CharacterListViewModel
+import com.platzi.android.rickandmorty.presentation.CharacterListViewModel.CharacterListNavigation
+import com.platzi.android.rickandmorty.presentation.CharacterListViewModel.CharacterListNavigation.*
+import com.platzi.android.rickandmorty.presentation.Event
 import com.platzi.android.rickandmorty.usescases.GetAllCharactersUseCase
-import com.platzi.android.rickandmorty.usescases.GetAllFavoriteCharacterUseCase
+import com.platzi.android.rickandmorty.utils.getViewModel
 import com.platzi.android.rickandmorty.utils.setItemDecorationSpacing
 import com.platzi.android.rickandmorty.utils.showLongToast
 import kotlinx.android.synthetic.main.fragment_character_list.*
@@ -26,16 +30,20 @@ import kotlinx.android.synthetic.main.fragment_character_list.*
 class CharacterListFragment : Fragment() {
 
     //region Fields
+
     private lateinit var characterGridAdapter: CharacterGridAdapter
     private lateinit var listener: OnCharacterListFragmentListener
-    private lateinit var characterRequest: CharacterRequest
 
-    private val getAllCharactersUseCase : GetAllCharactersUseCase by lazy {
+    private val characterRequest: CharacterRequest by lazy {
+        CharacterRequest(BASE_API_URL)
+    }
+
+    private val getAllCharactersUseCase: GetAllCharactersUseCase by lazy {
         GetAllCharactersUseCase(characterRequest)
     }
 
-    private val viewModel: CharacterListViewModel by lazy {
-        CharacterListViewModel(getAllCharactersUseCase)
+    private val characterListViewModel: CharacterListViewModel by lazy {
+        getViewModel { CharacterListViewModel(getAllCharactersUseCase) }
     }
 
     private val onScrollListener: RecyclerView.OnScrollListener by lazy {
@@ -48,7 +56,7 @@ class CharacterListFragment : Fragment() {
                 val totalItemCount: Int = layoutManager.itemCount
                 val firstVisibleItemPosition: Int = layoutManager.findFirstVisibleItemPosition()
 
-                viewModel.onLoadMoreItems(visibleItemCount, firstVisibleItemPosition, totalItemCount)
+                characterListViewModel.onLoadMoreItems(visibleItemCount, firstVisibleItemPosition, totalItemCount)
             }
         }
     }
@@ -71,9 +79,6 @@ class CharacterListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        characterRequest = CharacterRequest(BASE_API_URL)
-
         return DataBindingUtil.inflate<FragmentCharacterListBinding>(
             inflater,
             R.layout.fragment_character_list,
@@ -89,8 +94,9 @@ class CharacterListFragment : Fragment() {
 
         characterGridAdapter = CharacterGridAdapter { character ->
             listener.openCharacterDetail(character)
+        }.also {
+            setHasOptionsMenu(true)
         }
-        characterGridAdapter.setHasStableIds(true)
 
         rvCharacterList.run{
             addOnScrollListener(onScrollListener)
@@ -100,41 +106,43 @@ class CharacterListFragment : Fragment() {
         }
 
         srwCharacterList.setOnRefreshListener {
-            viewModel.onRetryGetAllCharacter(rvCharacterList.adapter?.itemCount ?: 0)
+            characterListViewModel.onRetryGetAllCharacter(rvCharacterList.adapter?.itemCount ?: 0)
         }
-        viewModel.events.observe(this, Observer { events ->
-            events?.getContentIfNotHandle()?.let { navigation ->
-                when (navigation) {
-                    is CharacterListViewModel.CharacterListNavigation.ShowCharacterError -> {
-                        context?.showLongToast("Error")
-                    }
-                    is CharacterListViewModel.CharacterListNavigation.ShowCharacterList -> navigation.run {
-                        characterGridAdapter.addData(characterList)
-                    }
-                    CharacterListViewModel.CharacterListNavigation.HideLoading -> {
-                        srwCharacterList.isRefreshing = false
-                    }
-                    CharacterListViewModel.CharacterListNavigation.ShowLoading -> {
-                        srwCharacterList.isRefreshing = true
-                    }
-                }
-            }
-        })
-        viewModel.onGetAllCharacters()
+
+        characterListViewModel.events.observe(this, Observer(this::validateEvents))
+
+        characterListViewModel.onGetAllCharacters()
     }
 
     //endregion
 
     //region Private Methods
 
-
+    private fun validateEvents(event: Event<CharacterListNavigation>?) {
+        event?.getContentIfNotHandle()?.let { navigation ->
+            when(navigation) {
+                is ShowCharacterError -> navigation.run {
+                    context?.showLongToast("Error -> ${error.message}")
+                }
+                is ShowCharacterList -> navigation.run {
+                    characterGridAdapter.addData(characterList)
+                }
+                HideLoading -> {
+                    srwCharacterList.isRefreshing = false
+                }
+                ShowLoading -> {
+                    srwCharacterList.isRefreshing = true
+                }
+            }
+        }
+    }
 
     //endregion
 
     //region Inner Classes & Interfaces
 
     interface OnCharacterListFragmentListener {
-        fun openCharacterDetail(character: CharacterServer)
+        fun openCharacterDetail(character: Character)
     }
 
     //endregion

@@ -3,102 +3,118 @@ package com.platzi.android.rickandmorty.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.platzi.android.rickandmorty.api.*
-import com.platzi.android.rickandmorty.database.CharacterDao
-import com.platzi.android.rickandmorty.database.CharacterEntity
+import com.platzi.android.rickandmorty.domain.Character
+import com.platzi.android.rickandmorty.domain.Episode
+import com.platzi.android.rickandmorty.presentation.CharacterDetailViewModel.CharacterDetailNavigation.*
 import com.platzi.android.rickandmorty.usescases.GetEpisodeFromCharacterUseCase
 import com.platzi.android.rickandmorty.usescases.GetFavoriteCharacterStatusCase
 import com.platzi.android.rickandmorty.usescases.UpdateFavoriteCharacterStatusUseCase
-import io.reactivex.Maybe
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 class CharacterDetailViewModel(
+    private val character: Character? = null,
     private val getEpisodeFromCharacterUseCase: GetEpisodeFromCharacterUseCase,
-    private val character: CharacterServer? = null,
-    private val getFavoriteCharacterStatusCase: GetFavoriteCharacterStatusCase,
+    private val getFavoriteCharacterStatusUseCase: GetFavoriteCharacterStatusCase,
     private val updateFavoriteCharacterStatusUseCase: UpdateFavoriteCharacterStatusUseCase
 ) : ViewModel() {
+
+    //region Fields
+
     private val disposable = CompositeDisposable()
 
-    private val _characterValues = MutableLiveData<CharacterServer>()
-    val characterValues: LiveData<CharacterServer> get() = _characterValues
+    private val _characterValues = MutableLiveData<Character>()
+    val characterValues: LiveData<Character> get() = _characterValues
 
-    private val _isFavoriteCharacter = MutableLiveData<Boolean>()
-    val isFavoriteCharacter: LiveData<Boolean> get() = _isFavoriteCharacter
+    private val _isFavorite = MutableLiveData<Boolean>()
+    val isFavorite: LiveData<Boolean> get() = _isFavorite
 
-    private val _events = MutableLiveData<Event<CharacterDetailsNavigation>>()
-    val events: LiveData<Event<CharacterDetailsNavigation>> get() = _events
+    private val _events = MutableLiveData<Event<CharacterDetailNavigation>>()
+    val events: LiveData<Event<CharacterDetailNavigation>> get() = _events
 
-    sealed class CharacterDetailsNavigation {
-        data class ShowCharacterDetailsError(val throwable: Throwable) :
-            CharacterDetailsNavigation()
+    //endregion
 
-        data class ShowEpisodesServerList(val listEpisodeServer: List<EpisodeServer>) :
-            CharacterDetailsNavigation()
-
-        object ShowLoading : CharacterDetailsNavigation()
-        object HideLoading : CharacterDetailsNavigation()
-        object CloseActivity : CharacterDetailsNavigation()
-    }
-
-    fun onCharacterValidation() {
-        if (character == null) {
-            _events.value = Event(CharacterDetailsNavigation.CloseActivity)
-            return
-        }
-
-        _characterValues.value = character
-        onValidateFavoriteCharacterStatus()
-        onShowEpisodeList(characterValues.value!!.episodeList)
-    }
-
-    private fun onValidateFavoriteCharacterStatus() {
-        disposable.add(
-            getFavoriteCharacterStatusCase
-                .invoke(character!!.id)
-                .subscribe { isFavorite ->
-                    _isFavoriteCharacter.value = isFavorite
-                }
-        )
-    }
-
-    private fun onShowEpisodeList(episodeUrlList: List<String>) {
-        disposable.add(
-            getEpisodeFromCharacterUseCase.invoke(episodeUrlList)
-                .doOnSubscribe {
-                    _events.value = Event(CharacterDetailsNavigation.ShowLoading)
-                }
-                .subscribe(
-                    { episodeList ->
-                        _events.value = Event(CharacterDetailsNavigation.HideLoading)
-                        _events.value =
-                            Event(CharacterDetailsNavigation.ShowEpisodesServerList(episodeList))
-                    },
-                    { error ->
-                        _events.value = Event(CharacterDetailsNavigation.HideLoading)
-                        _events.value =
-                            Event(CharacterDetailsNavigation.ShowCharacterDetailsError(error))
-                    })
-        )
-    }
-
-    fun onUpdateFavoriteCharacterStatus() {
-        val characterEntity: CharacterEntity = character!!.toCharacterEntity()
-        disposable.add(
-            updateFavoriteCharacterStatusUseCase
-                .invoke(characterEntity)
-                .subscribe { isFavorite ->
-                    _isFavoriteCharacter.value = isFavorite
-                }
-        )
-    }
-
+    //region Override Methods & Callbacks
 
     override fun onCleared() {
         super.onCleared()
         disposable.clear()
     }
+
+    //endregion
+
+    //region Public Methods
+
+    fun onCharacterValidation() {
+        if (character == null) {
+            _events.value = Event(CloseActivity)
+            return
+        }
+
+        _characterValues.value = character
+
+        validateFavoriteCharacterStatus(character.id)
+        requestShowEpisodeList(character.episodeList)
+    }
+
+    fun onUpdateFavoriteCharacterStatus() {
+        disposable.add(
+            updateFavoriteCharacterStatusUseCase
+                .invoke(character!!)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe { isFavorite ->
+                    _isFavorite.value = isFavorite
+                }
+        )
+    }
+
+    //endregion
+
+    //region Private Methods
+
+    private fun validateFavoriteCharacterStatus(characterId: Int){
+        disposable.add(
+            getFavoriteCharacterStatusUseCase
+                .invoke(characterId)
+                .subscribe { isFavorite ->
+                    _isFavorite.value = isFavorite
+                }
+        )
+    }
+
+    private fun requestShowEpisodeList(episodeUrlList: List<String>){
+        disposable.add(
+            getEpisodeFromCharacterUseCase
+                .invoke(episodeUrlList)
+                .doOnSubscribe {
+                    _events.value = Event(ShowEpisodeListLoading)
+                }
+                .subscribe(
+                    { episodeList ->
+                        _events.value = Event(HideEpisodeListLoading)
+                        _events.value = Event(ShowEpisodeList(episodeList))
+                    },
+                    { error ->
+                        _events.value = Event(HideEpisodeListLoading)
+                        _events.value = Event(ShowEpisodeError(error))
+                    })
+        )
+    }
+
+    //endregion
+
+    //region Inner Classes & Interfaces
+
+    sealed class CharacterDetailNavigation {
+        data class ShowEpisodeError(val error: Throwable) : CharacterDetailNavigation()
+        data class ShowEpisodeList(val episodeList: List<Episode>) : CharacterDetailNavigation()
+        object CloseActivity : CharacterDetailNavigation()
+        object HideEpisodeListLoading : CharacterDetailNavigation()
+        object ShowEpisodeListLoading : CharacterDetailNavigation()
+    }
+
+    //endregion
+
 }

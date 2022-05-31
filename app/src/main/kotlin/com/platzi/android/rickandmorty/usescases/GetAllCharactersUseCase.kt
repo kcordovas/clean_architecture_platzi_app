@@ -1,9 +1,6 @@
 package com.platzi.android.rickandmorty.usescases
 
-import com.platzi.android.rickandmorty.api.CharacterRequest
-import com.platzi.android.rickandmorty.api.CharacterResponseServer
-import com.platzi.android.rickandmorty.api.CharacterService
-import com.platzi.android.rickandmorty.api.toCharacterServerList
+import com.platzi.android.rickandmorty.api.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -15,7 +12,7 @@ class GetAllCharactersUseCase(
         characterRequest
             .getService<CharacterService>()
             .getAllCharacters(currentPage)
-            .map(CharacterResponseServer::toCharacterServerList)
+            .map(CharacterResponseServer::toCharacterDomainList)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
 }
